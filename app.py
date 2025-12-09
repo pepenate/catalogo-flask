@@ -41,11 +41,16 @@ def get_connection():
 
 
 def query_one(sql, params=None):
-    cnx = get_connection()
-    if not cnx:
+    conn = get_connection()
+    if conn is None:
         print("query_one: sin conexión a BD")
         return None
-
+    cur = conn.cursor(dictionary=True)
+    cur.execute(sql, params or ())
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return row
 
 
 def query_all(sql, params=None):
@@ -204,6 +209,12 @@ def login():
             return redirect(url_for("dashboard", tenant_slug=user["slug"]))
         else:
             error = "Credenciales incorrectas"
+
+        if request.method == "POST":
+            email = request.form.get("email", "").strip()
+            password = request.form.get("password", "")
+            print("EMAIL RECIBIDO FORM:", repr(email))
+
 
     # GET o POST con error → mostramos login
     return render_template("login.html", error=error)
