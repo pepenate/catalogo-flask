@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Configuración empresa{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="mb-4">
+            <h1 class="h4 mb-1">Configuración de la empresa</h1>
+            <p class="text-muted mb-0">
+                Actualiza la información básica de <strong>{{ t.nombre_empresa }}</strong>.
+            </p>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de la empresa</label>
+                        <input type="text" name="nombre_empresa" class="form-control"
+                               value="{{ t.nombre_empresa }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" name="direccion" class="form-control"
+                               value="{{ t.direccion or '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="telefono" class="form-control"
+                               value="{{ t.telefono or '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Moneda principal</label>
+                        <input type="text" name="moneda" class="form-control"
+                               placeholder="Ej: COP, USD"
+                               value="{{ t.moneda or '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Logo (URL)</label>
+                        <input type="url" name="logo_url" class="form-control"
+                               placeholder="https://..."
+                               value="{{ t.logo_url or '' }}">
+                        <div class="form-text">
+                            Más adelante puedes cambiar esto por una subida de archivo.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2-circle me-1"></i> Guardar cambios
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if t.logo_url %}
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h2 class="h6 mb-0">Vista previa del logo</h2>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ t.logo_url }}" alt="Logo empresa" class="img-fluid mb-3"
+                     style="max-height:120px; object-fit:contain;">
+                <p class="text-muted small mb-0">
+                    Este logo se podrá usar en reportes y encabezados de documentos.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

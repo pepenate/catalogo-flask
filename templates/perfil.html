@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Mi perfil{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">Mi perfil</h1>
+        <p class="text-muted mb-0">Gestiona tu información personal en {{ t.nombre_empresa }}</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Columna izquierda: tarjeta resumen -->
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                {% set iniciales = (user.nombre[0] if user.nombre else 'U') ~ (user.apel[0] if user.apel else '') %}
+                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3"
+                     style="width:80px; height:80px; font-size:2rem; font-weight:600;">
+                    {{ iniciales }}
+                </div>
+                <h5 class="mb-1">
+                    {{ user.nombre }}{% if user.seg_nom %} {{ user.seg_nom }}{% endif %}
+                    {{ user.apel }}{% if user.seg_apel %} {{ user.seg_apel }}{% endif %}
+                </h5>
+                <p class="text-muted mb-2">
+                    {{ user.email }}
+                </p>
+
+                <hr>
+
+                <div class="text-start small text-muted">
+                    <p class="mb-1"><i class="bi bi-building me-2"></i>Empresa: <strong>{{ t.nombre_empresa }}</strong></p>
+                    <p class="mb-0"><i class="bi bi-person-badge me-2"></i>ID usuario: {{ user.id }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna derecha: formulario de edición -->
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Datos personales</h5>
+                <p class="text-muted small mb-4">
+                    Actualiza tu información básica. Estos datos se usan en el sistema y en documentos como facturas.
+                </p>
+
+                <form method="post" novalidate>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Primer nombre</label>
+                            <input type="text" name="nombre" class="form-control"
+                                   value="{{ user.nombre or '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Segundo nombre</label>
+                            <input type="text" name="seg_nom" class="form-control"
+                                   value="{{ user.seg_nom or '' }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Primer apellido</label>
+                            <input type="text" name="apel" class="form-control"
+                                   value="{{ user.apel or '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Segundo apellido</label>
+                            <input type="text" name="seg_apel" class="form-control"
+                                   value="{{ user.seg_apel or '' }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Correo electrónico</label>
+                            <input type="email" name="email" class="form-control"
+                                   value="{{ user.email or '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="{{ url_for('dashboard', tenant_slug=t.slug) }}" class="btn btn-light">
+                            <i class="bi bi-arrow-left-circle me-1"></i> Volver al dashboard
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Guardar cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

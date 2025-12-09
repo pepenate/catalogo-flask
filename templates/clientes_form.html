@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Cliente{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+{% set edit_mode = cliente is defined %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">
+            {% if edit_mode %}Editar cliente{% else %}Nuevo cliente{% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {% if edit_mode %}
+                Actualiza la información del cliente.
+            {% else %}
+                Registra un nuevo cliente para {{ t.nombre_empresa }}.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre completo</label>
+                    <input type="text" name="nombre" class="form-control" required
+                           value="{{ cliente.nombre if edit_mode else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Documento (NIT / CC)</label>
+                    <input type="text" name="documento" class="form-control"
+                           value="{{ cliente.documento if edit_mode else '' }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control"
+                           value="{{ cliente.email if edit_mode else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Teléfono</label>
+                    <input type="text" name="telefono" class="form-control"
+                           value="{{ cliente.telefono if edit_mode else '' }}">
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">Dirección</label>
+                    <input type="text" name="direccion" class="form-control"
+                           value="{{ cliente.direccion if edit_mode else '' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ciudad</label>
+                    <input type="text" name="ciudad" class="form-control"
+                           value="{{ cliente.ciudad if edit_mode else '' }}">
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{{ url_for('clientes_list', tenant_slug=t.slug) }}"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check2-circle me-1"></i>
+                    {% if edit_mode %}Guardar cambios{% else %}Guardar cliente{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

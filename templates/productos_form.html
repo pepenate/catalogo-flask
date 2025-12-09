@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Producto{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+{% set edit_mode = producto is defined %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">
+            {% if edit_mode %}Editar producto{% else %}Nuevo producto{% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {% if edit_mode %}
+                Actualiza la información del producto.
+            {% else %}
+                Agrega un producto al catálogo de {{ t.nombre_empresa }}.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Código</label>
+                    <input type="text" name="codigo" class="form-control" required
+                           value="{{ producto.codigo if edit_mode else '' }}">
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" required
+                           value="{{ producto.nombre if edit_mode else '' }}">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" rows="3" class="form-control"
+                              placeholder="Opcional...">{{ producto.descripcion if edit_mode else '' }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Precio</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" step="0.01" min="0"
+                               name="precio" class="form-control" required
+                               value="{{ producto.precio if edit_mode else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Stock</label>
+                    <input type="number" min="0" name="stock" class="form-control" required
+                           value="{{ producto.stock if edit_mode else 0 }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Estado</label>
+                    {% set est = producto.estado if edit_mode else 'activo' %}
+                    <select name="estado" class="form-select" required>
+                        <option value="activo"   {% if est == 'activo' %}selected{% endif %}>Activo</option>
+                        <option value="inactivo" {% if est == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{{ url_for('productos_list', tenant_slug=t.slug) }}"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check2-circle me-1"></i>
+                    {% if edit_mode %}Guardar cambios{% else %}Guardar producto{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

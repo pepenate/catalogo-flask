@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Configuración de cuenta{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-xl-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-3">Configuración de cuenta</h1>
+                <p class="text-muted mb-4">
+                    Cambia tu contraseña para mantener segura tu cuenta en
+                    <strong>{{ t.nombre_empresa }}</strong>.
+                </p>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña actual</label>
+                        <input type="password" name="password_actual"
+                               class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="password" name="password_nueva"
+                               class="form-control" required>
+                        <div class="form-text">
+                            Mínimo 4 caracteres.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar nueva contraseña</label>
+                        <input type="password" name="password_confirmar"
+                               class="form-control" required>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <a href="{{ url_for('dashboard', tenant_slug=t.slug) }}"
+                           class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-shield-lock me-1"></i> Guardar cambios
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

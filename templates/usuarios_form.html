@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Usuario{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+{% set edit_mode = usuario is defined %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">
+            {% if edit_mode %}Editar usuario{% else %}Nuevo usuario{% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {% if edit_mode %}
+                Actualiza la información del usuario.
+            {% else %}
+                Crea un usuario para {{ t.nombre_empresa }}.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Primer nombre</label>
+                    <input type="text" name="nombre" class="form-control" required
+                           value="{{ usuario.nombre if edit_mode else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Segundo nombre</label>
+                    <input type="text" name="seg_nom" class="form-control"
+                           value="{{ usuario.seg_nom if edit_mode else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Primer apellido</label>
+                    <input type="text" name="apel" class="form-control" required
+                           value="{{ usuario.apel if edit_mode else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Segundo apellido</label>
+                    <input type="text" name="seg_apel" class="form-control"
+                           value="{{ usuario.seg_apel if edit_mode else '' }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required
+                           value="{{ usuario.email if edit_mode else '' }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Rol</label>
+                    <select name="rol" class="form-select" required>
+                        {% set rol_actual = usuario.rol if edit_mode else 'vendedor' %}
+                        <option value="admin"   {% if rol_actual == 'admin' %}selected{% endif %}>Administrador</option>
+                        <option value="vendedor" {% if rol_actual == 'vendedor' %}selected{% endif %}>Vendedor</option>
+                        <option value="visor"   {% if rol_actual == 'visor' %}selected{% endif %}>Solo lectura</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="activo"
+                               name="activo"
+                               {% if not edit_mode or usuario.activo %}checked{% endif %}>
+                        <label class="form-check-label" for="activo">
+                            Usuario activo
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="mt-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">
+                        {% if edit_mode %}Nueva contraseña (opcional){% else %}Contraseña{% endif %}
+                    </label>
+                    <input type="password" name="password" class="form-control"
+                           {% if not edit_mode %}required{% endif %}>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        {% if edit_mode %}Confirmar nueva contraseña{% else %}Confirmar contraseña{% endif %}
+                    </label>
+                    <input type="password" name="password2" class="form-control"
+                           {% if not edit_mode %}required{% endif %}>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{{ url_for('usuarios_list', tenant_slug=t.slug) }}"
+                   class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check2-circle me-1"></i>
+                    {% if edit_mode %}Guardar cambios{% else %}Crear usuario{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

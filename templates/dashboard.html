@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Dashboard</h1>
+        <p class="text-muted mb-0">
+            Resumen general
+            {% if tenant %}
+                de <strong>{{ tenant.nombre_empresa }}</strong>
+            {% elif g.tenant %}
+                de <strong>{{ g.tenant.nombre_empresa }}</strong>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted mb-1" style="font-size:.75rem;">Ventas del mes</p>
+                <h3 class="h4 mb-0">$ {{ ventas_mes|default("0") }}</h3>
+                <small class="text-success">+0% vs mes anterior</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted mb-1" style="font-size:.75rem;">Clientes activos</p>
+                <h3 class="h4 mb-0">{{ clientes_activos|default(0) }}</h3>
+                <small class="text-muted">registrados</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted mb-1" style="font-size:.75rem;">Productos activos</p>
+                <h3 class="h4 mb-0">{{ productos_activos|default(0) }}</h3>
+                <small class="text-muted">en catálogo</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <p class="text-uppercase text-muted mb-1" style="font-size:.75rem;">Facturas pendientes</p>
+                <h3 class="h4 mb-0">{{ facturas_pendientes|default(0) }}</h3>
+                <small class="text-muted">por cobrar</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0">Ventas recientes</h2>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>N° factura</th>
+                                <th class="text-end">Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if ventas_recientes %}
+                                {% for v in ventas_recientes %}
+                                    <tr>
+                                        <td>{{ v.fecha }}</td>
+                                        <td>{{ v.cliente }}</td>
+                                        <td>{{ v.numero }}</td>
+                                        <td class="text-end">$ {{ v.total }}</td>
+                                        <td>{{ v.estado }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        No hay ventas registradas todavía.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body">
+                <h2 class="h6 mb-3">Atajos rápidos</h2>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('productos_list', tenant_slug=g.tenant.slug) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-box-seam me-1"></i> Ver productos
+                    </a>
+                    <a href="{{ url_for('clientes_list', tenant_slug=g.tenant.slug) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-people me-1"></i> Ver clientes
+                    </a>
+                    <a href="{{ url_for('facturas_list', tenant_slug=g.tenant.slug) }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-receipt-cutoff me-1"></i> Registrar venta
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h2 class="h6 mb-2">Estado general</h2>
+                <p class="text-muted small mb-0">
+                    Una vez registres productos, clientes y facturas, este panel mostrará
+                    un resumen automático del rendimiento de tu empresa.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

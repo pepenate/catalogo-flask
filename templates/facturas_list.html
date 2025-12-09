@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Ventas / Facturas{% endblock %}
+
+{% block content %}
+{% set t = tenant if tenant is defined else g.tenant %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 mb-1">Ventas / Facturas</h1>
+        <p class="text-muted mb-0">Historial de facturación de {{ t.nombre_empresa }}</p>
+    </div>
+    <a href="{{ url_for('facturas_nueva', tenant_slug=t.slug) }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Nueva factura
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>N° factura</th>
+                        <th class="text-end">Total</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if facturas %}
+                        {% for f in facturas %}
+                            <tr>
+                                <td>{{ f.fecha.strftime("%Y-%m-%d") if f.fecha else "-" }}</td>
+                                <td>{{ f.cliente_nombre }}</td>
+                                <td>{{ f.numero }}</td>
+                                <td class="text-end">$ {{ "%.2f"|format(f.total) }}</td>
+                                <td>
+                                    {% if f.estado == 'pagada' %}
+                                        <span class="badge text-bg-success">Pagada</span>
+                                    {% elif f.estado == 'pendiente' %}
+                                        <span class="badge text-bg-warning text-dark">Pendiente</span>
+                                    {% elif f.estado == 'anulada' %}
+                                        <span class="badge text-bg-danger">Anulada</span>
+                                    {% else %}
+                                        <span class="badge text-bg-secondary">{{ f.estado }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('facturas_ver', tenant_slug=t.slug, factura_id=f.id) }}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No hay facturas registradas aún.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
