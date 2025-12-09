@@ -26,37 +26,26 @@ app.config["MAIL_FROM"]     = "global.english.mail@gmail.com"
 # ---------------------------------------------------------
 
 def get_connection():
-    """
-    Crea y retorna una conexión a MySQL usando DB_CONFIG (dict).
-    DB_CONFIG debe estar en config.py, por ejemplo:
-
-    DB_CONFIG = {
-        "host": "localhost",
-        "user": "root",
-        "password": "TU_CLAVE",
-        "database": "catalogo_selles",
-        "port": 3306
-    }
-    """
     try:
-        conn = mysql.connector.connect(**DB_CONFIG)
+        conn = mysql.connector.connect(
+            host=DB_CONFIG["host"],
+            port=DB_CONFIG["port"],
+            user=DB_CONFIG["user"],
+            password=DB_CONFIG["password"],
+            database=DB_CONFIG["database"],
+        )
         return conn
     except Error as e:
-        print("Error al conectar a MySQL:", e)
+        print(f"Error al conectar a MySQL: {e}")
         return None
 
 
 def query_one(sql, params=None):
-    conn = get_connection()
-    if conn is None:
+    cnx = get_connection()
+    if not cnx:
         print("query_one: sin conexión a BD")
         return None
-    cur = conn.cursor(dictionary=True)
-    cur.execute(sql, params or ())
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
-    return row
+
 
 
 def query_all(sql, params=None):
