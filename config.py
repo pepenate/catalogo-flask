@@ -2,11 +2,11 @@
 import os
 
 DB_CONFIG = {
-    # En Railway usará las variables MYSQLHOST, etc.
-    # En tu PC usará los valores por defecto (localhost).
-    "host": os.getenv("MYSQLHOST", "127.0.0.1"),
-    "port": int(os.getenv("MYSQLPORT", 3306)),
-    "user": os.getenv("MYSQLUSER", "root"),
-    "password": os.getenv("MYSQLPASSWORD", "Pedrinche@2020"),
-    "database": os.getenv("MYSQLDATABASE", "catalogo_selles"),
+    # En Railway leerá DB_HOST, DB_PORT, etc.
+    # En tu PC, si no existen variables, usará los valores por defecto.
+    "host": os.getenv("DB_HOST", "127.0.0.1"),
+    "port": int(os.getenv("DB_PORT", 3306)),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD", "Pedrinche@2020"),
+    "database": os.getenv("DB_NAME", "catalogo_selles"),
 }
